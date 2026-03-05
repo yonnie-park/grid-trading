@@ -103,6 +103,16 @@
 .status-badge--mock { color: #484848; }
 .status-badge--mock:hover { color: #909090; border-color: #323232; }
 
+/* ── DEPOSIT ── */
+.status-badge--deposit {
+  color: #909090;
+  border-color: #1e1e1e;
+}
+.status-badge--deposit:hover {
+  color: #efefef;
+  border-color: #323232;
+}
+
 /* ── CONNECT WALLET ── */
 .status-badge--wallet {
   color: #ADFF2F;
