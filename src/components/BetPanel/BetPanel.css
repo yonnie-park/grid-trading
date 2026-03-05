@@ -1,0 +1,211 @@
+.bet-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #070707;
+  border-left: 1px solid #1e1e1e;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 11px;
+  color: #484848;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #1e1e1e;
+}
+
+/* ── BALANCE ── */
+.bet-panel__balance {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.balance-amount {
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: #efefef;
+}
+
+.balance-amount sup {
+  font-size: 13px;
+  color: #484848;
+  font-weight: 300;
+  vertical-align: super;
+}
+
+/* ── HEADER ── */
+.bet-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.bet-count {
+  color: #2c2c2c;
+  margin-left: 4px;
+}
+
+.clear-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: #484848;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+.clear-btn:hover { color: #909090; }
+
+/* ── LIST ── */
+.bet-panel__list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ── EMPTY STATE ── */
+.bet-panel__empty {
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.empty-art {
+  font-size: 11px;
+  color: #484848;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  -webkit-animation: artFlicker 2.5s steps(1) infinite;
+          animation: artFlicker 2.5s steps(1) infinite;
+}
+
+@-webkit-keyframes artFlicker {
+  0%,100% { opacity: 1; }
+  10%      { opacity: 0.3; }
+  11%      { opacity: 1; }
+  47%      { opacity: 1; }
+  48%      { opacity: 0.15; }
+  49%      { opacity: 1; }
+}
+
+@keyframes artFlicker {
+  0%,100% { opacity: 1; }
+  10%      { opacity: 0.3; }
+  11%      { opacity: 1; }
+  47%      { opacity: 1; }
+  48%      { opacity: 0.15; }
+  49%      { opacity: 1; }
+}
+
+.empty-text {
+  font-size: 11px;
+  color: #2c2c2c;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+}
+
+/* ── BET ITEM ── */
+.bet-item {
+  position: relative;
+  padding: 12px 16px;
+  border-bottom: 1px solid #111;
+  overflow: hidden;
+  transition: background 0.15s;
+}
+
+.bet-item--active  { border-left: 2px solid #ADFF2F; }
+.bet-item--won     { border-left: 2px solid rgba(173,255,47,0.4); }
+.bet-item--lost    { border-left: 2px solid rgba(255,107,107,0.3); }
+.bet-item--expired { border-left: 2px solid #1e1e1e; }
+
+.bet-item__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.bet-status {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+.bet-status--active  { color: #ADFF2F; }
+.bet-status--won     { color: #ADFF2F; }
+.bet-status--lost    { color: #FF6B6B; }
+.bet-status--expired { color: #484848; }
+
+.bet-odds {
+  font-size: 12px;
+  color: #909090;
+}
+
+.bet-price {
+  font-size: 12px;
+  color: #909090;
+  margin-bottom: 3px;
+}
+
+.bet-time {
+  font-size: 11px;
+  color: #484848;
+  margin-bottom: 5px;
+}
+
+.bet-amount {
+  font-size: 11px;
+  color: #484848;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.bet-pnl--won  { color: #ADFF2F; text-shadow: 0 0 6px rgba(173,255,47,0.4); }
+.bet-pnl--lost { color: #FF6B6B; }
+
+/* ── LEGEND ── */
+.bet-panel__legend {
+  padding: 12px 16px;
+  border-top: 1px solid #1e1e1e;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.legend-dot--bettable { border-color: rgba(173,255,47,0.3); background: rgba(173,255,47,0.05); }
+.legend-dot--locked   { border-color: rgba(255,107,107,0.3); background: rgba(255,107,107,0.05); }
+.legend-dot--present  { border-color: #323232; background: rgba(255,255,255,0.04); }
+.legend-dot--past     { border-color: #1e1e1e; }
+
+.legend-item span {
+  font-size: 11px;
+  color: #484848;
+  letter-spacing: 0.06em;
+}
