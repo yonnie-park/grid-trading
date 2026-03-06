@@ -47,7 +47,7 @@ async function drawCard(canvas: HTMLCanvasElement, bet: Bet) {
 
   // ── BG SVG image ──
   try {
-    const bgImg = await loadImage("/bg.svg");
+    const bgImg = await loadImage(isWon ? "/bg.png" : "/jennie.png");
     ctx.globalAlpha = 0.18;
     ctx.drawImage(bgImg, 0, 0, W, H);
     ctx.globalAlpha = 1;
