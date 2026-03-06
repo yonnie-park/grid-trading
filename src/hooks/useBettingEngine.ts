@@ -16,6 +16,7 @@ export function useBettingEngine(
   const betsRef = useRef<Bet[]>([])
   const engineRef = useRef(new ProbEngine())
   const currentPriceRef = useRef<number | null>(null)
+  const resolvingRef = useRef<Set<string>>(new Set())
 
   // Feed new prices into the prob engine
   useEffect(() => {
@@ -59,7 +60,7 @@ export function useBettingEngine(
     })
   }, [])
 
-  // Poll every 500ms to resolve bets whose cells are past
+  // Poll every 50ms to resolve bets whose cells are past
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now()
@@ -69,8 +70,10 @@ export function useBettingEngine(
 
         const next = prev.map(bet => {
           if (bet.status !== 'active') return bet
+          if (resolvingRef.current.has(bet.id)) return bet
           if (getCellState(bet.cellTimeIndex, now) !== 'past') return bet
 
+          resolvingRef.current.add(bet.id)
           changed = true
           const range = timeIndexToTimeRange(bet.cellTimeIndex)
           const priceRange = logIndexToPriceRange(bet.cellPriceIndex)
@@ -79,7 +82,7 @@ export function useBettingEngine(
           for (let i = 0; i < buffer.size; i++) {
             const p = buffer.get(i)
             if (!p) continue
-            if (p.timestamp >= range.start && p.timestamp <= range.end) {
+            if (p.timestamp >= range.start && p.timestamp <= range.end + 500) {
               if (p.price >= priceRange.low && p.price <= priceRange.high) {
                 hit = true; break
               }
@@ -105,7 +108,7 @@ export function useBettingEngine(
         if (changed) { betsRef.current = next; return next }
         return prev
       })
-    }, 500)
+    }, 50)
     return () => clearInterval(interval)
   }, [bufferRef])
 

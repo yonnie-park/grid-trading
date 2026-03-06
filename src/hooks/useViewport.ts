@@ -6,6 +6,7 @@ export function useViewport() {
   const offsetMsRef = useRef(0)
   const logCenterRef = useRef<number | null>(null)
   const scaleRef = useRef(1)
+  const followPriceRef = useRef(true)
 
   const viewportRef = useRef<Viewport>({
     startTime: Date.now() - 120_000,
@@ -17,6 +18,7 @@ export function useViewport() {
 
   const updateViewport = useCallback((now: number, currentPrice: number, canvasWidth: number) => {
     if (logCenterRef.current === null) logCenterRef.current = Math.log(currentPrice)
+    if (followPriceRef.current) logCenterRef.current = Math.log(currentPrice)
     const scale = scaleRef.current
     const effectiveCellPx = CELL_PX * scale
     const visibleMs = (canvasWidth / effectiveCellPx) * SECONDS_PER_CELL * 1000
@@ -51,5 +53,9 @@ export function useViewport() {
     scaleRef.current = newScale
   }, [])
 
-  return { viewportRef, updateViewport, pan, zoom }
+  const setFollowPrice = useCallback((follow: boolean) => {
+    followPriceRef.current = follow
+  }, [])
+
+  return { viewportRef, updateViewport, pan, zoom, setFollowPrice, followPriceRef }
 }

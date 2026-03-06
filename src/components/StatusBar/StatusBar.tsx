@@ -11,6 +11,8 @@ interface Props {
   walletAddress: string | null;
   walletUsername: string | null;
   onConnectWallet: () => void;
+  followPrice: boolean;
+  onToggleFollow: () => void;
 }
 
 function truncate(str: string) {
@@ -30,6 +32,8 @@ export function StatusBar({
   walletAddress,
   walletUsername,
   onConnectWallet,
+  followPrice,
+  onToggleFollow,
 }: Props) {
   const { connector } = useAccount();
   const { openDeposit } = useInterwovenKit();
@@ -53,12 +57,19 @@ export function StatusBar({
         />
         <div className="status-bar__divider" />
         <div className={`status-dot status-dot--${status}`} />
-        <span className="status-pair">BTCUSDT</span>
+        <span className="status-pair">BTC/USDT</span>
         {currentPrice !== null && (
           <span className="status-price">{currentPrice.toFixed(2)}</span>
         )}
       </div>
       <div className="status-bar__right">
+        <button
+          className={`status-badge status-badge--follow ${followPrice ? "status-badge--follow-on" : ""}`}
+          onClick={onToggleFollow}
+          title="Follow price"
+        >
+          {followPrice ? "⊙ Follow" : "⊙ Follow"}
+        </button>
         <button
           className="status-badge status-badge--mock"
           onClick={onToggleMode}

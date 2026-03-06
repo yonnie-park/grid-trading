@@ -161,6 +161,7 @@ interface Props {
   onCellClick: (cell: CellCoord) => void;
   getOdds: (ti: number, pi: number) => number | null;
   onClearWonId: (id: string) => void;
+  followPrice: boolean;
 }
 
 export function TradingCanvas({
@@ -170,6 +171,7 @@ export function TradingCanvas({
   onCellClick,
   getOdds,
   onClearWonId,
+  followPrice,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -184,7 +186,12 @@ export function TradingCanvas({
   const [winOverlays, setWinOverlays] = useState<WinOverlayInstance[]>([]);
   const shownWonIds = useRef<Set<string>>(new Set());
 
-  const { viewportRef, updateViewport, pan, zoom } = useViewport();
+  const { viewportRef, updateViewport, pan, zoom, setFollowPrice } =
+    useViewport();
+
+  useEffect(() => {
+    setFollowPrice(followPrice);
+  }, [followPrice, setFollowPrice]);
   const {
     cursorRef,
     isDragging,

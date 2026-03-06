@@ -4,9 +4,9 @@ import type { CellState, CellCoord } from '../types'
 export function getCellState(cellTimeIndex: number, now: number): CellState {
   const cellStartMs = cellTimeIndex * SECONDS_PER_CELL * 1000
   const cellEndMs = cellStartMs + SECONDS_PER_CELL * 1000
-  const diff = cellStartMs - now
   if (cellEndMs <= now) return 'past'
-  if (cellStartMs <= now && cellEndMs > now) return 'present'
+  if (cellStartMs <= now) return 'present'
+  const diff = cellStartMs - now
   if (diff < BET_LOCKOUT_MS) return 'locked'
   return 'bettable'
 }

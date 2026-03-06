@@ -11,6 +11,7 @@ import "./App.css";
 export function App() {
   const [mode, setMode] = useState<"binance" | "mock">("binance");
   const [betAmount, setBetAmount] = useState(100);
+  const [followPrice, setFollowPrice] = useState(true);
   const { bufferRef, currentPrice, status } = usePriceStream(mode);
   const {
     bets,
@@ -46,6 +47,8 @@ export function App() {
         walletAddress={address ?? null}
         walletUsername={username ?? null}
         onConnectWallet={address ? openWallet : openConnect}
+        followPrice={followPrice}
+        onToggleFollow={() => setFollowPrice((f) => !f)}
       />
       <div className="app__body">
         <Leaderboard />
@@ -57,6 +60,7 @@ export function App() {
             onCellClick={handleCellClick}
             getOdds={getOdds}
             onClearWonId={clearWonId}
+            followPrice={followPrice}
           />
         </div>
         <div className="app__panel">

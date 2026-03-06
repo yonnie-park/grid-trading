@@ -76,7 +76,7 @@
 }
 
 .status-price {
-  font-size: 14px;
+  font-size: 24px;
   font-weight: 500;
   color: #ffffff;
   letter-spacing: -0.02em;
@@ -183,4 +183,15 @@
   flex-shrink: 0;
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.status-badge--follow {
+  color: rgba(255,255,255,0.4);
+  border-color: #2a2a2a;
+  background: transparent;
+}
+.status-badge--follow-on {
+  color: #ADFF2F;
+  border-color: rgba(173,255,47,0.4);
+  background: rgba(173,255,47,0.08);
 }
