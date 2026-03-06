@@ -19,6 +19,7 @@ export function renderBetOverlays(
   ctx.clip()
 
   for (const bet of bets) {
+    if (bet.status !== 'active') continue
     const rect = cellToPixelRect(bet.cellTimeIndex, bet.cellPriceIndex, startTime, logCenterPrice, chartHeight, effectiveCellPx)
     if (rect.x + rect.w < 0 || rect.x > chartWidth) continue
     if (rect.y + rect.h < 0 || rect.y > chartHeight) continue

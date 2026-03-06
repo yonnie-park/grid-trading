@@ -9,8 +9,12 @@ import "./BetPanel.css";
 interface Props {
   bets: Bet[];
   balance: number;
+  betAmount: number;
+  onBetAmountChange: (amount: number) => void;
   onClearResolved: () => void;
 }
+
+const PRESET_AMOUNTS = [10, 50, 100, 500];
 
 // Single rAF drives opacity for ALL active items at the same time
 function usePulse(period = 1800) {
@@ -55,7 +59,13 @@ function EmptyArt() {
   return <pre className="empty-art">{EMPTY_FRAMES[frame]}</pre>;
 }
 
-export function BetPanel({ bets, balance, onClearResolved }: Props) {
+export function BetPanel({
+  bets,
+  balance,
+  betAmount,
+  onBetAmountChange,
+  onClearResolved,
+}: Props) {
   const hasResolved = bets.some((b) => b.status !== "active");
   const pulseOpacity = usePulse(1800);
   const hasActive = bets.some((b) => b.status === "active");
@@ -67,6 +77,34 @@ export function BetPanel({ bets, balance, onClearResolved }: Props) {
         <div className="balance-amount">
           <sup>$</sup>
           {balance.toFixed(2)}
+        </div>
+      </div>
+
+      <div className="bet-panel__amount">
+        <div className="section-label">Bet Amount</div>
+        <div className="amount-presets">
+          {PRESET_AMOUNTS.map((a) => (
+            <button
+              key={a}
+              className={`amount-btn ${betAmount === a ? "amount-btn--active" : ""}`}
+              onClick={() => onBetAmountChange(a)}
+            >
+              ${a}
+            </button>
+          ))}
+        </div>
+        <div className="amount-custom">
+          <span className="amount-custom__prefix">$</span>
+          <input
+            className="amount-custom__input"
+            type="number"
+            min={1}
+            value={betAmount}
+            onChange={(e) => {
+              const v = parseInt(e.target.value);
+              if (!isNaN(v) && v > 0) onBetAmountChange(v);
+            }}
+          />
         </div>
       </div>
 

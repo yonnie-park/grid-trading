@@ -31,7 +31,7 @@ export function useBettingEngine(
     return calculateOdds(engineRef.current, ti, pi, price, Date.now())
   }, [])
 
-  const placeBet = useCallback((cell: CellCoord) => {
+  const placeBet = useCallback((cell: CellCoord, betAmount: number = 100) => {
     const now = Date.now()
     const price = currentPriceRef.current
     if (!price || getCellState(cell.timeIndex, now) !== 'bettable') return
@@ -46,12 +46,12 @@ export function useBettingEngine(
       cellTimeIndex: cell.timeIndex,
       cellPriceIndex: cell.priceIndex,
       odds,
-      amount: DEFAULT_BET_AMOUNT,
+      amount: betAmount,
       status: 'active',
       createdAt: now,
       resolvedAt: null,
     }
-    setBalance(b => b - DEFAULT_BET_AMOUNT)
+    setBalance(b => b - betAmount)
     setBets(prev => {
       const next = [...prev, bet]
       betsRef.current = next
@@ -112,6 +112,7 @@ export function useBettingEngine(
   const clearWonId = useCallback((id: string) => {
     setWonIds(ids => { const next = new Set(ids); next.delete(id); return next })
   }, [])
+
 
   const clearResolved = useCallback(() => {
     setBets(prev => {

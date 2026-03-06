@@ -54,3 +54,21 @@
   z-index: 20;
   white-space: pre;
 }
+
+/* ── Win overlay ── */
+.win-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 26px;
+  font-weight: 700;
+  color: #ADFF2F;
+  text-shadow:
+    0 0 8px rgba(173, 255, 47, 1),
+    0 0 20px rgba(173, 255, 47, 0.7),
+    0 0 40px rgba(173, 255, 47, 0.3);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transform-origin: center center;
+  z-index: 20;
+}

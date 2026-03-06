@@ -71,6 +71,89 @@ function Firework({
   );
 }
 
+// ── Win overlay: profit text that fades out ──
+interface WinOverlayInstance {
+  id: string;
+  x: number;
+  y: number;
+  profit: number;
+  startedAt: number;
+}
+
+const WIN_OVERLAY_DURATION = 3200;
+// phase 0→0.25: scale up + appear, 0.25→0.75: hold, 0.75→1: float up + fade
+
+function WinOverlay({
+  x,
+  y,
+  profit,
+  startedAt,
+  onDone,
+}: {
+  x: number;
+  y: number;
+  profit: number;
+  startedAt: number;
+  onDone: () => void;
+}) {
+  const [style, setStyle] = useState({ opacity: 0, scale: 0.4, offsetY: 0 });
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    function tick() {
+      const elapsed = Date.now() - startedAt;
+      const t = Math.min(elapsed / WIN_OVERLAY_DURATION, 1);
+
+      let opacity: number, scale: number, offsetY: number;
+
+      if (t < 0.2) {
+        // Burst in: scale 0.4 → 1.3 (overshoot), fade 0 → 1
+        const p = t / 0.2;
+        scale = 0.4 + 0.9 * p; // 0.4 → 1.3
+        opacity = p;
+        offsetY = 0;
+      } else if (t < 0.3) {
+        // Settle: scale 1.3 → 1.0
+        const p = (t - 0.2) / 0.1;
+        scale = 1.3 - 0.3 * p;
+        opacity = 1;
+        offsetY = 0;
+      } else if (t < 0.7) {
+        // Hold
+        scale = 1.0;
+        opacity = 1;
+        offsetY = 0;
+      } else {
+        // Float up + fade out
+        const p = (t - 0.7) / 0.3;
+        scale = 1.0;
+        opacity = 1 - p;
+        offsetY = -40 * p;
+      }
+
+      setStyle({ opacity, scale, offsetY });
+      if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      else onDone();
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  return (
+    <div
+      className="win-overlay"
+      style={{
+        left: x,
+        top: y + style.offsetY,
+        opacity: style.opacity,
+        transform: `translateX(-50%) scale(${style.scale})`,
+      }}
+    >
+      +${profit.toFixed(2)}
+    </div>
+  );
+}
+
 interface Props {
   bufferRef: React.RefObject<RingBuffer<PricePoint>>;
   betsRef: React.RefObject<Bet[]>;
@@ -98,6 +181,7 @@ export function TradingCanvas({
   });
   const rafRef = useRef(0);
   const [fireworks, setFireworks] = useState<FireworkInstance[]>([]);
+  const [winOverlays, setWinOverlays] = useState<WinOverlayInstance[]>([]);
   const shownWonIds = useRef<Set<string>>(new Set());
 
   const { viewportRef, updateViewport, pan, zoom } = useViewport();
@@ -151,6 +235,13 @@ export function TradingCanvas({
       if (x < 0 || x > chartWidth || y < 0 || y > chartHeight) return;
 
       setFireworks((fw) => [...fw, { id, x, y }]);
+
+      // Win overlay with profit
+      const profit = bet.amount * bet.odds - bet.amount;
+      setWinOverlays((ov) => [
+        ...ov,
+        { id, x, y, profit, startedAt: Date.now() },
+      ]);
     });
   }, [wonIds, betsRef, viewportRef]);
 
@@ -261,6 +352,18 @@ export function TradingCanvas({
         onClick={handleClick}
       />
       {/* Fireworks rendered over the canvas at exact cell positions */}
+      {winOverlays.map((ov) => (
+        <WinOverlay
+          key={ov.id}
+          x={ov.x}
+          y={ov.y}
+          profit={ov.profit}
+          startedAt={ov.startedAt}
+          onDone={() =>
+            setWinOverlays((prev) => prev.filter((o) => o.id !== ov.id))
+          }
+        />
+      ))}
       {fireworks.map((fw) => (
         <Firework
           key={fw.id}

@@ -28,9 +28,9 @@ export const CURRENT_PRICE_LINE_COLOR = 'rgba(100, 100, 100, 0.6)'
 export const CROSSHAIR_COLOR        = 'rgba(100, 100, 100, 0.35)'
 export const HOVER_CELL_COLOR       = 'rgba(255, 255, 255, 0.04)'
 export const AXIS_BG_COLOR          = 'rgba(7, 7, 7, 0.92)'
-export const AXIS_TEXT_COLOR        = 'rgba(72, 72, 72, 0.9)'
+export const AXIS_TEXT_COLOR        = 'rgba(255, 255, 255, 0.5)'
 export const AXIS_TAG_BG            = 'rgba(30, 30, 30, 0.98)'
-export const AXIS_TAG_TEXT          = '#efefef'
+export const AXIS_TAG_TEXT          = '#ffffff'
 
 export const getCellStateColor = (state: CellState) => CELL_STATE_COLORS[state]
 export const getBetStatusColor = (status: BetStatus) => BET_STATUS_COLORS[status]

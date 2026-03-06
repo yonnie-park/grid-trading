@@ -20,27 +20,77 @@ export function renderPriceLine(
   ctx.rect(0, 0, chartWidth, chartHeight)
   ctx.clip()
 
-  ctx.strokeStyle = PRICE_LINE_COLOR
-  ctx.lineWidth = 1.5
-  ctx.lineJoin = 'round'
-  ctx.lineCap = 'round'
-  ctx.beginPath()
-
-  let started = false
+  // Collect visible points first
+  const pts: { x: number; y: number }[] = []
   for (let i = 0; i < buffer.size; i++) {
     const p = buffer.get(i)
-    if (!p || p.timestamp < startTime - 60_000 || p.timestamp > endTime) continue
+    if (!p || p.timestamp < startTime - 60_000 || p.timestamp > endTime + 60_000) continue
+    if (!isFinite(p.price) || p.price <= 0) continue
     const x = timestampToX(p.timestamp, startTime, effectiveCellPx)
     const y = priceToY(p.price, logCenterPrice, chartHeight, effectiveCellPx)
-    if (!started) { ctx.moveTo(x, y); started = true }
-    else ctx.lineTo(x, y)
+    if (!isFinite(x) || !isFinite(y)) continue
+    pts.push({ x, y })
   }
-  if (started) ctx.stroke()
+  // Sort by x so out-of-order timestamps don't cause spikes
+  pts.sort((a, b) => a.x - b.x)
+
+  if (pts.length >= 2) {
+    const last = pts[pts.length - 1]
+    ctx.lineWidth = 2.5
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round'
+
+    // Grey body
+    ctx.strokeStyle = 'rgba(160,160,160,0.6)'
+    ctx.beginPath()
+    for (let i = 0; i < pts.length; i++) {
+      if (i === 0) ctx.moveTo(pts[i].x, pts[i].y)
+      else ctx.lineTo(pts[i].x, pts[i].y)
+    }
+    ctx.stroke()
+
+    // Neon green tip — last 100px, fading in from grey
+    const NEON_PX = 100
+    const tipPts = pts.filter(p => last.x - p.x <= NEON_PX)
+    if (tipPts.length >= 2) {
+      const n = tipPts.length
+      for (let i = 1; i < n; i++) {
+        const t = i / (n - 1)                     // 0 = start of tip, 1 = newest
+        const r = Math.round(160 * (1 - t) + 173 * t)
+        const g = Math.round(160 * (1 - t) + 255 * t)
+        const b = Math.round(160 * (1 - t) +  47 * t)
+        ctx.strokeStyle = `rgba(${r},${g},${b},${0.6 + 0.4 * t})`
+        ctx.beginPath()
+        ctx.moveTo(tipPts[i - 1].x, tipPts[i - 1].y)
+        ctx.lineTo(tipPts[i].x, tipPts[i].y)
+        ctx.stroke()
+      }
+    }
+  }
 
   // Current price dashed line
   const last = buffer.last()
   if (last) {
     const lastY = priceToY(last.price, logCenterPrice, chartHeight, effectiveCellPx)
+    const lastX = pts.length > 0 ? pts[pts.length - 1].x : chartWidth
+
+    // Glow dot at latest price point
+    const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 300)
+    const outerR = 6 + 2 * pulse
+    const glow = ctx.createRadialGradient(lastX, lastY, 0, lastX, lastY, outerR * 3)
+    glow.addColorStop(0,   `rgba(173,255,47,${0.9})`)
+    glow.addColorStop(0.3, `rgba(173,255,47,${0.4 * pulse})`)
+    glow.addColorStop(1,   `rgba(173,255,47,0)`)
+    ctx.fillStyle = glow
+    ctx.beginPath()
+    ctx.arc(lastX, lastY, outerR * 3, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Solid core
+    ctx.fillStyle = '#ADFF2F'
+    ctx.beginPath()
+    ctx.arc(lastX, lastY, 3, 0, Math.PI * 2)
+    ctx.fill()
     ctx.strokeStyle = CURRENT_PRICE_LINE_COLOR
     ctx.lineWidth = 1
     ctx.setLineDash([4, 4])

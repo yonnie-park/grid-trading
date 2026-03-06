@@ -44,8 +44,15 @@ export function StatusBar({
   return (
     <div className="status-bar">
       <div className="status-bar__left">
+        <img
+          src="/logo.svg"
+          alt="logo"
+          className="status-logo"
+          onClick={() => (window.location.href = "/")}
+          style={{ cursor: "pointer" }}
+        />
+        <div className="status-bar__divider" />
         <div className={`status-dot status-dot--${status}`} />
-        <span className="status-label">{status}</span>
         <span className="status-pair">BTC/USDT</span>
         {currentPrice !== null && (
           <span className="status-price">{currentPrice.toFixed(2)}</span>

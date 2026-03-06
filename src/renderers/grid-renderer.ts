@@ -48,6 +48,7 @@ export function renderGrid(
       const y = centerY - ((cellTopLog - logCenterPrice) / LOG_STEP) * effectiveCellPx
       if (y + effectiveCellPx < 0 || y > chartHeight) continue
 
+      if (state === 'past') continue  // past cells: no fill, no odds
       if (color !== 'rgba(0, 0, 0, 0)') {
         ctx.fillStyle = color
         ctx.fillRect(x, y, effectiveCellPx, effectiveCellPx)
@@ -56,7 +57,7 @@ export function renderGrid(
       if (state === 'bettable' && showText) {
         const odds = getOdds(ti, pi)
         if (odds !== null) {
-          ctx.fillStyle = 'rgba(72, 72, 72, 0.8)'
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
           ctx.font = `${fontSize}px "IBM Plex Mono", monospace`
           ctx.textAlign = 'center'
           ctx.textBaseline = 'middle'
@@ -69,8 +70,10 @@ export function renderGrid(
   ctx.textAlign = 'start'
   ctx.textBaseline = 'alphabetic'
 
-  // Vertical grid lines
+  // Vertical grid lines — skip past columns
+  const nowTi = Math.floor(now / (SECONDS_PER_CELL * 1000))
   for (let ti = startTi; ti <= endTi + 1; ti++) {
+    if (ti <= nowTi) continue  // past column: no line
     const x = Math.round(((ti * SECONDS_PER_CELL * 1000 - startTime) / (SECONDS_PER_CELL * 1000)) * effectiveCellPx) + 0.5
     ctx.strokeStyle = ti % 12 === 0 ? GRID_LINE_MAJOR_COLOR : GRID_LINE_COLOR
     ctx.lineWidth = 1
@@ -80,13 +83,15 @@ export function renderGrid(
     ctx.stroke()
   }
 
-  // Horizontal grid lines
+  // Horizontal grid lines — only in non-past region
+  const presentX = ((nowTi * SECONDS_PER_CELL * 1000 - startTime) / (SECONDS_PER_CELL * 1000)) * effectiveCellPx
+  const hLineStartX = Math.max(0, presentX)
   for (let pi = startPi; pi <= endPi + 1; pi++) {
     const y = Math.round(centerY - ((pi * LOG_STEP - logCenterPrice) / LOG_STEP) * effectiveCellPx) + 0.5
     ctx.strokeStyle = pi % 10 === 0 ? GRID_LINE_MAJOR_COLOR : GRID_LINE_COLOR
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(0, y)
+    ctx.moveTo(hLineStartX, y)
     ctx.lineTo(chartWidth, y)
     ctx.stroke()
   }
