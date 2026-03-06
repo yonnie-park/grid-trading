@@ -321,7 +321,12 @@ export function TradingCanvas({
       ctx.fillStyle = BG_COLOR;
       ctx.fillRect(0, 0, dims.width, dims.height);
 
-      renderGrid(ctx, vp, dims, now, getOdds);
+      const activeCells = new Set(
+        betsRef.current
+          .filter((b) => b.status === "active")
+          .map((b) => `${b.cellTimeIndex},${b.cellPriceIndex}`),
+      );
+      renderGrid(ctx, vp, dims, now, getOdds, activeCells);
       renderBetOverlays(ctx, betsRef.current, vp, dims);
       renderPriceLine(ctx, bufferRef.current, vp, dims);
 

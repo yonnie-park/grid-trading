@@ -24,7 +24,7 @@ export function renderPriceLine(
   const pts: { x: number; y: number }[] = []
   for (let i = 0; i < buffer.size; i++) {
     const p = buffer.get(i)
-    if (!p || p.timestamp < startTime - 60_000 || p.timestamp > endTime + 60_000) continue
+    if (!p || p.timestamp < startTime - 5_000 || p.timestamp > endTime + 5_000) continue
     if (!isFinite(p.price) || p.price <= 0) continue
     const x = timestampToX(p.timestamp, startTime, effectiveCellPx)
     const y = priceToY(p.price, logCenterPrice, chartHeight, effectiveCellPx)
@@ -92,7 +92,7 @@ export function renderPriceLine(
     ctx.arc(lastX, lastY, 3, 0, Math.PI * 2)
     ctx.fill()
     ctx.strokeStyle = CURRENT_PRICE_LINE_COLOR
-    ctx.lineWidth = 1
+    ctx.lineWidth = 1 
     ctx.setLineDash([4, 4])
     ctx.beginPath()
     ctx.moveTo(0, lastY)

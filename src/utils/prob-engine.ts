@@ -1,12 +1,12 @@
 import { SECONDS_PER_CELL } from '../lib/constants'
 import { clamp, normalCdf } from '../lib/math'
 
-const DEFAULT_LAMBDA = 0.9981819657682716
-const DEFAULT_KAPPA = 1.2487844586767025
-const DEFAULT_INIT_SIGMA2 = 1e-9
+const DEFAULT_LAMBDA = 0.98   // faster EWMA for 1s cells
+const DEFAULT_KAPPA = 1.25
+const DEFAULT_INIT_SIGMA2 = 5e-8  // ~0.02% per second, realistic BTC vol
 const MIN_SIGMA2 = 1e-18
 const MIN_PROB = 1e-12
-const PRICE_UPDATE_INTERVAL_SEC = 0.25
+const PRICE_UPDATE_INTERVAL_SEC = 0.1  // ~100ms Binance tick
 
 export class ProbEngine {
   private lambda: number

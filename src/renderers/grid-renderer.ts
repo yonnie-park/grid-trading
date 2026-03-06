@@ -12,7 +12,8 @@ export function renderGrid(
   viewport: Viewport,
   dims: CanvasDimensions,
   now: number,
-  getOdds: (ti: number, pi: number) => number | null
+  getOdds: (ti: number, pi: number) => number | null,
+  activeCells?: Set<string>
 ) {
   const { width, height } = dims
   const { startTime, logCenterPrice, effectiveCellPx } = viewport
@@ -54,7 +55,7 @@ export function renderGrid(
         ctx.fillRect(x, y, effectiveCellPx, effectiveCellPx)
       }
 
-      if (state === 'bettable' && showText) {
+      if (state === 'bettable' && showText && !activeCells?.has(`${ti},${pi}`)) {
         const odds = getOdds(ti, pi)
         if (odds !== null) {
           ctx.fillStyle = 'rgba(255, 255, 255, 0.5)'
