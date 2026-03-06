@@ -1,5 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import type { Bet } from "../../types";
+import { PnlCard } from "./PnlCard";
+
+function ShareIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M7 1H1V15H15V9H13V13H3V3H7V1ZM9.00008 3H11.5859L5.08573 9.58579L6.49994 11L13.0001 4.41421V7H15.0001V1H9.00008V3Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
 import {
   logIndexToPriceRange,
   timeIndexToTimeRange,
@@ -69,6 +89,7 @@ export function BetPanel({
   const hasResolved = bets.some((b) => b.status !== "active");
   const pulseOpacity = usePulse(1800);
   const hasActive = bets.some((b) => b.status === "active");
+  const [selectedBet, setSelectedBet] = useState<Bet | null>(null);
 
   return (
     <div className="bet-panel">
@@ -157,6 +178,15 @@ export function BetPanel({
                     {bet.odds.toFixed(2)}x
                   </span>
                 </div>
+                {(bet.status === "won" || bet.status === "lost") && (
+                  <button
+                    className="bet-share-btn"
+                    onClick={() => setSelectedBet(bet)}
+                    title="Share PnL card"
+                  >
+                    <ShareIcon />
+                  </button>
+                )}
                 <div className="bet-price">
                   ${pr.low.toFixed(1)} — ${pr.high.toFixed(1)}
                 </div>
@@ -181,6 +211,10 @@ export function BetPanel({
           })
         )}
       </div>
+
+      {selectedBet && (
+        <PnlCard bet={selectedBet} onClose={() => setSelectedBet(null)} />
+      )}
 
       <div className="bet-panel__legend">
         <div className="legend-item">

@@ -53,7 +53,7 @@ export function StatusBar({
         />
         <div className="status-bar__divider" />
         <div className={`status-dot status-dot--${status}`} />
-        <span className="status-pair">BTC/USDT</span>
+        <span className="status-pair">BTCUSDT</span>
         {currentPrice !== null && (
           <span className="status-price">{currentPrice.toFixed(2)}</span>
         )}

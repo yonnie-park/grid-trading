@@ -1,0 +1,108 @@
+.pnl-card-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-animation: overlay-in 0.15s ease-out;
+          animation: overlay-in 0.15s ease-out;
+}
+
+@-webkit-keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.pnl-card-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  -webkit-animation: modal-in 0.2s ease-out;
+          animation: modal-in 0.2s ease-out;
+}
+
+@-webkit-keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.pnl-card-canvas {
+  border-radius: 100px;
+  display: block;
+  box-shadow: 0 0 60px rgba(173,255,47,0.08), 0 24px 48px rgba(0,0,0,0.6);
+}
+
+.pnl-card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.pnl-btn {
+  flex: 1;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  padding: 12px 0;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pnl-btn--download {
+  color: rgba(255,255,255,0.6);
+  background: transparent;
+  border-color: #2a2a2a;
+}
+.pnl-btn--download:hover {
+  color: #fff;
+  border-color: #3a3a3a;
+}
+
+.pnl-btn--share {
+  color: #000;
+  background: #ADFF2F;
+  border-color: #ADFF2F;
+  font-weight: 700;
+}
+.pnl-btn--share:hover {
+  background: #c4ff5a;
+  border-color: #c4ff5a;
+  box-shadow: 0 0 20px rgba(173,255,47,0.3);
+}
+
+.pnl-card-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.pnl-card-close:hover {
+  color: #fff;
+  border-color: #3a3a3a;
+}

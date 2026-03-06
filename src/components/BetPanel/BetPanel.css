@@ -277,3 +277,26 @@
   color: rgba(255,255,255,0.5);
   letter-spacing: 0.06em;
 }
+
+.bet-share-btn {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+}
+.bet-share-btn:hover {
+  color: #ADFF2F;
+  background: rgba(173,255,47,0.08);
+  border-color: rgba(173,255,47,0.3);
+}
