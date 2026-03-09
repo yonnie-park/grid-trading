@@ -96,25 +96,6 @@
   transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
-.status-badge::before {
-  content: '';
-  position: absolute;
-  top: -3px; left: -3px;
-  width: 5px; height: 5px;
-  background: #070707;
-  border: 1px solid #2a2a2a;
-  transition: border-color 0.15s;
-}
-
-.status-badge::after {
-  content: '';
-  position: absolute;
-  bottom: -3px; right: -3px;
-  width: 5px; height: 5px;
-  background: #070707;
-  border: 1px solid #2a2a2a;
-  transition: border-color 0.15s;
-}
 
 /* ── MOCK/BINANCE TOGGLE ── */
 .status-badge--mock { color: rgba(255,255,255,0.6); }
@@ -157,10 +138,6 @@
   gap: 10px;
   letter-spacing: 0.06em;
   text-transform: none;
-}
-.status-badge--connected::before,
-.status-badge--connected::after {
-  border-color: rgba(173, 255, 47, 0.2);
 }
 .status-badge--connected:hover {
   color: #ffffff;
