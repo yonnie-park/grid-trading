@@ -4,13 +4,12 @@ import { StatusBar } from "./components/StatusBar/StatusBar";
 import { BetPanel } from "./components/BetPanel/BetPanel";
 import { TradingCanvas } from "./components/TradingCanvas/TradingCanvas";
 import { Leaderboard } from "./components/Leaderboard/Leaderboard";
+import { DepositGate } from "./components/DepositGate/DepositGate";
 import { usePriceStream } from "./hooks/usePriceStream";
 import { useBettingEngine } from "./hooks/useBettingEngine";
 import {
   GAME_CHAIN_ID,
   INIT_DENOM,
-  L1_BRIDGE_DENOM,
-  L1_CHAIN_ID,
   TREASURY_ADDRESS,
   toInitBaseUnits,
 } from "./lib/chain";
@@ -27,8 +26,8 @@ export function App() {
     betsRef,
     balance,
     session,
-    startSession,
     endSession,
+    startSession,
     placeBet,
     getOdds,
     clearResolved,
@@ -42,7 +41,6 @@ export function App() {
     username,
     openConnect,
     openWallet,
-    openBridge,
     requestTxBlock,
   } = useInterwovenKit();
 
@@ -52,10 +50,6 @@ export function App() {
     },
     [placeBet, betAmount],
   );
-
-  const handleBridge = useCallback(() => {
-    openBridge({ srcChainId: L1_CHAIN_ID, srcDenom: L1_BRIDGE_DENOM });
-  }, [openBridge]);
 
   const handleDepositAndStart = useCallback(
     async (depositAmount: number) => {
@@ -101,7 +95,6 @@ export function App() {
         walletAddress={address ?? null}
         walletUsername={username ?? null}
         onConnectWallet={address ? openWallet : openConnect}
-        onBridge={handleBridge}
         followPrice={followPrice}
         onToggleFollow={() => setFollowPrice((f) => !f)}
       />
@@ -118,16 +111,12 @@ export function App() {
             followPrice={followPrice}
           />
           {session === "idle" && (
-            <div className="chart-overlay">
-              <div className="chart-overlay__box">
-                <span className="chart-overlay__title">
-                  // Deposit to start betting
-                </span>
-                <span className="chart-overlay__hint">
-                  Use the panel on the right →
-                </span>
-              </div>
-            </div>
+            <DepositGate
+              walletConnected={!!initiaAddress}
+              pending={depositPending}
+              error={depositError}
+              onDeposit={handleDepositAndStart}
+            />
           )}
         </div>
         <div className="app__panel">
@@ -138,11 +127,7 @@ export function App() {
             onBetAmountChange={setBetAmount}
             onClearResolved={clearResolved}
             session={session}
-            onStartSession={handleDepositAndStart}
             onEndSession={endSession}
-            depositPending={depositPending}
-            depositError={depositError}
-            walletConnected={!!initiaAddress}
           />
         </div>
       </div>

@@ -54,14 +54,6 @@
 }
 
 /* ── SESSION CONTROLS ── */
-.deposit-presets {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin-top: 14px;
-  margin-bottom: 8px;
-}
-
 .session-btn {
   margin-top: 10px;
   width: 100%;
@@ -75,22 +67,6 @@
   transition: color 0.12s, border-color 0.12s, background 0.12s;
 }
 
-.session-btn--start {
-  color: #ADFF2F;
-  border: 1px solid rgba(173, 255, 47, 0.4);
-  background: rgba(173, 255, 47, 0.06);
-}
-.session-btn--start:hover {
-  border-color: rgba(173, 255, 47, 0.7);
-  background: rgba(173, 255, 47, 0.12);
-}
-.session-btn--start:disabled {
-  color: rgba(255,255,255,0.25);
-  border-color: #2a2a2a;
-  background: transparent;
-  cursor: not-allowed;
-}
-
 .session-btn--end {
   color: #ff5d5d;
   border: 1px solid rgba(255, 93, 93, 0.4);
@@ -99,18 +75,6 @@
 .session-btn--end:hover {
   border-color: rgba(255, 93, 93, 0.7);
   background: rgba(255, 93, 93, 0.12);
-}
-
-.session-error {
-  margin-top: 10px;
-  padding: 8px 10px;
-  font-size: 11px;
-  color: #ff8080;
-  border: 1px solid rgba(255, 93, 93, 0.35);
-  background: rgba(255, 93, 93, 0.06);
-  letter-spacing: 0.02em;
-  line-height: 1.4;
-  word-break: break-word;
 }
 
 /* ── BET AMOUNT SELECTOR ── */

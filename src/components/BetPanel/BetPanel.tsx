@@ -3,6 +3,9 @@ import type { Bet } from "../../types";
 import type { Session } from "../../hooks/useBettingEngine";
 import { PnlCard } from "./PnlCard";
 
+// DepositGate now owns the idle-state deposit flow; BetPanel only handles
+// the active (playing) session.
+
 function ShareIcon() {
   return (
     <svg
@@ -34,15 +37,10 @@ interface Props {
   onBetAmountChange: (amount: number) => void;
   onClearResolved: () => void;
   session: Session;
-  onStartSession: (depositAmount: number) => void;
   onEndSession: () => void;
-  depositPending: boolean;
-  depositError: string | null;
-  walletConnected: boolean;
 }
 
 const PRESET_AMOUNTS = [10, 50, 100, 500];
-const DEPOSIT_PRESETS = [100, 500, 1000, 5000];
 
 // Single rAF drives opacity for ALL active items at the same time
 function usePulse(period = 1800) {
@@ -94,16 +92,11 @@ export function BetPanel({
   onBetAmountChange,
   onClearResolved,
   session,
-  onStartSession,
   onEndSession,
-  depositPending,
-  depositError,
-  walletConnected,
 }: Props) {
   const hasResolved = bets.some((b) => b.status !== "active");
   const pulseOpacity = usePulse(1800);
   const [selectedBet, setSelectedBet] = useState<Bet | null>(null);
-  const [depositAmount, setDepositAmount] = useState(1000);
 
   const isIdle = session === "idle";
 
@@ -115,48 +108,7 @@ export function BetPanel({
           {balance.toFixed(2)}
           <span className="balance-unit">INIT</span>
         </div>
-        {isIdle ? (
-          <>
-            <div className="deposit-presets">
-              {DEPOSIT_PRESETS.map((a) => (
-                <button
-                  key={a}
-                  className={`amount-btn ${depositAmount === a ? "amount-btn--active" : ""}`}
-                  onClick={() => setDepositAmount(a)}
-                >
-                  {a} INIT
-                </button>
-              ))}
-            </div>
-            <div className="amount-custom">
-              <input
-                className="amount-custom__input"
-                type="number"
-                min={1}
-                value={depositAmount}
-                onChange={(e) => {
-                  const v = parseInt(e.target.value);
-                  if (!isNaN(v) && v > 0) setDepositAmount(v);
-                }}
-              />
-              <span className="amount-custom__suffix">INIT</span>
-            </div>
-            <button
-              className="session-btn session-btn--start"
-              onClick={() => onStartSession(depositAmount)}
-              disabled={depositAmount <= 0 || depositPending}
-            >
-              {depositPending
-                ? "Signing…"
-                : walletConnected
-                  ? "Deposit and Start"
-                  : "Connect Wallet to Start"}
-            </button>
-            {depositError && (
-              <div className="session-error">{depositError}</div>
-            )}
-          </>
-        ) : (
+        {!isIdle && (
           <button
             className="session-btn session-btn--end"
             onClick={onEndSession}

@@ -8,7 +8,6 @@ interface Props {
   walletAddress: string | null;
   walletUsername: string | null;
   onConnectWallet: () => void;
-  onBridge: () => void;
   followPrice: boolean;
   onToggleFollow: () => void;
 }
@@ -24,14 +23,13 @@ export function StatusBar({
   walletAddress,
   walletUsername,
   onConnectWallet,
-  onBridge,
   followPrice,
   onToggleFollow,
 }: Props) {
   const { connector } = useAccount();
   const walletIcon = connector?.icon;
-  const displayName =
-    walletUsername ?? (walletAddress ? truncate(walletAddress) : null);
+  const name = walletUsername && walletUsername.length > 0 ? walletUsername : null;
+  const displayName = name ?? (walletAddress ? truncate(walletAddress) : null);
 
   return (
     <div className="status-bar">
@@ -56,17 +54,8 @@ export function StatusBar({
           onClick={onToggleFollow}
           title="Follow price"
         >
-          {followPrice ? "⊙ Follow" : "⊙ Follow"}
+          ⊙ Follow
         </button>
-        {displayName && (
-          <button
-            className="status-badge status-badge--bridge"
-            onClick={onBridge}
-            title="Bridge INIT from testnet"
-          >
-            Bridge INIT
-          </button>
-        )}
         {displayName ? (
           <button
             className="status-badge status-badge--wallet status-badge--connected"

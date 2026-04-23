@@ -1,0 +1,139 @@
+.deposit-gate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 7, 7, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 10;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.deposit-gate__card {
+  width: 340px;
+  padding: 22px 22px 20px;
+  border: 1px solid rgba(173, 255, 47, 0.35);
+  background: rgba(10, 10, 10, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.deposit-gate__title {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ADFF2F;
+}
+
+.deposit-gate__hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.08em;
+  margin-top: -8px;
+}
+
+.deposit-gate__presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.deposit-gate__preset {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  border: 1px solid #2a2a2a;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.deposit-gate__preset:hover {
+  color: #ffffff;
+  border-color: #3a3a3a;
+}
+
+.deposit-gate__preset--active {
+  color: #ADFF2F;
+  border-color: rgba(173, 255, 47, 0.5);
+  background: rgba(173, 255, 47, 0.06);
+}
+
+.deposit-gate__input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #2a2a2a;
+  transition: border-color 0.12s;
+}
+
+.deposit-gate__input:focus-within {
+  border-color: #3a3a3a;
+}
+
+.deposit-gate__input input {
+  flex: 1;
+  width: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: #ffffff;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 9px 0 9px 12px;
+  -moz-appearance: textfield;
+}
+
+.deposit-gate__input input::-webkit-outer-spin-button,
+.deposit-gate__input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.deposit-gate__input-suffix {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.08em;
+  padding: 0 12px;
+}
+
+.deposit-gate__cta {
+  width: 100%;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 0;
+  cursor: pointer;
+  color: #ADFF2F;
+  border: 1px solid rgba(173, 255, 47, 0.45);
+  background: rgba(173, 255, 47, 0.08);
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.deposit-gate__cta:hover {
+  border-color: rgba(173, 255, 47, 0.75);
+  background: rgba(173, 255, 47, 0.14);
+}
+
+.deposit-gate__cta:disabled {
+  color: rgba(255, 255, 255, 0.25);
+  border-color: #2a2a2a;
+  background: transparent;
+  cursor: not-allowed;
+}
+
+.deposit-gate__error {
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #ff8080;
+  border: 1px solid rgba(255, 93, 93, 0.35);
+  background: rgba(255, 93, 93, 0.06);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  word-break: break-word;
+}
