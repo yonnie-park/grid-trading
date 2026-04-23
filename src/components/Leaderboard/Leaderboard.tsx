@@ -55,10 +55,11 @@ export function Leaderboard() {
                 <span className="lb-name">{entry.name}</span>
                 <div className="lb-right">
                   <span className="lb-pnl">
-                    +$
+                    +
                     {entry.pnl.toLocaleString("en-US", {
                       minimumFractionDigits: 2,
                     })}
+                    {" INIT"}
                   </span>
                   <span className="lb-winrate">{entry.winRate}%</span>
                 </div>

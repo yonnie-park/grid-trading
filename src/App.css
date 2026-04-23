@@ -15,6 +15,45 @@
 .app__chart {
   flex: 1;
   overflow: hidden;
+  position: relative;
+}
+
+.chart-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 7, 7, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 10;
+  cursor: not-allowed;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.chart-overlay__box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 32px;
+  border: 1px solid rgba(173, 255, 47, 0.35);
+  background: rgba(173, 255, 47, 0.04);
+  color: #ADFF2F;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.chart-overlay__title {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chart-overlay__hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.18em;
 }
 
 .app__panel {

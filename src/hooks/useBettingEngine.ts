@@ -1,22 +1,46 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { RingBuffer } from '../lib/ring-buffer'
-import { DEFAULT_BET_AMOUNT } from '../lib/constants'
 import { getCellState, timeIndexToTimeRange, logIndexToPriceRange } from '../utils/grid-math'
 import { calculateOdds } from '../utils/odds-calculator'
 import { ProbEngine } from '../utils/prob-engine'
 import type { Bet, CellCoord, PricePoint } from '../types'
+
+export type Session = 'idle' | 'playing'
 
 export function useBettingEngine(
   bufferRef: React.RefObject<RingBuffer<PricePoint>>,
   currentPrice: number | null
 ) {
   const [bets, setBets] = useState<Bet[]>([])
-  const [balance, setBalance] = useState(10_000)
+  const [balance, setBalance] = useState(0)
+  const [session, setSession] = useState<Session>('idle')
   const [wonIds, setWonIds] = useState<Set<string>>(new Set())
   const betsRef = useRef<Bet[]>([])
   const engineRef = useRef(new ProbEngine())
   const currentPriceRef = useRef<number | null>(null)
   const resolvingRef = useRef<Set<string>>(new Set())
+  const sessionRef = useRef<Session>('idle')
+
+  const startSession = useCallback((depositAmount: number) => {
+    if (depositAmount <= 0) return
+    setBalance(depositAmount)
+    setBets([])
+    betsRef.current = []
+    resolvingRef.current = new Set()
+    setWonIds(new Set())
+    sessionRef.current = 'playing'
+    setSession('playing')
+  }, [])
+
+  const endSession = useCallback(() => {
+    sessionRef.current = 'idle'
+    setSession('idle')
+    setBalance(0)
+    setBets([])
+    betsRef.current = []
+    resolvingRef.current = new Set()
+    setWonIds(new Set())
+  }, [])
 
   // Feed new prices into the prob engine
   useEffect(() => {
@@ -33,6 +57,7 @@ export function useBettingEngine(
   }, [])
 
   const placeBet = useCallback((cell: CellCoord, betAmount: number = 100) => {
+    if (sessionRef.current !== 'playing') return
     const now = Date.now()
     const price = currentPriceRef.current
     if (!price || getCellState(cell.timeIndex, now) !== 'bettable') return
@@ -125,5 +150,17 @@ export function useBettingEngine(
     })
   }, [])
 
-  return { bets, betsRef, balance, placeBet, getOdds, clearResolved, wonIds, clearWonId }
+  return {
+    bets,
+    betsRef,
+    balance,
+    session,
+    startSession,
+    endSession,
+    placeBet,
+    getOdds,
+    clearResolved,
+    wonIds,
+    clearWonId,
+  }
 }

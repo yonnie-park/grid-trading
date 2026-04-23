@@ -13,6 +13,7 @@ import {
 import css from "@initia/interwovenkit-react/styles.css?inline";
 import "./index.css";
 import { App } from "./App";
+import { GAME_CHAIN_ID } from "./lib/chain";
 
 injectStyles(css);
 
@@ -30,7 +31,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={wagmiConfig}>
-        <InterwovenKitProvider {...TESTNET}>
+        <InterwovenKitProvider {...TESTNET} defaultChainId={GAME_CHAIN_ID}>
           <div className="grain" />
           <App />
         </InterwovenKitProvider>

@@ -103,10 +103,10 @@ async function drawCard(canvas: HTMLCanvasElement, bet: Bet) {
 
   // ── Stats ──
   const stats = [
-    { label: "bet amount", value: `$${bet.amount}` },
+    { label: "bet amount", value: `${bet.amount} INIT` },
     {
       label: "payout",
-      value: isWon ? `$${(bet.amount * bet.odds).toFixed(2)}` : "$0",
+      value: isWon ? `${(bet.amount * bet.odds).toFixed(2)} INIT` : "0 INIT",
     },
     { label: "price range", value: `$${low.toFixed(0)}-${high.toFixed(0)}` },
   ];

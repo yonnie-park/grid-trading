@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Bet } from "../../types";
+import type { Session } from "../../hooks/useBettingEngine";
 import { PnlCard } from "./PnlCard";
 
 function ShareIcon() {
@@ -32,9 +33,16 @@ interface Props {
   betAmount: number;
   onBetAmountChange: (amount: number) => void;
   onClearResolved: () => void;
+  session: Session;
+  onStartSession: (depositAmount: number) => void;
+  onEndSession: () => void;
+  depositPending: boolean;
+  depositError: string | null;
+  walletConnected: boolean;
 }
 
 const PRESET_AMOUNTS = [10, 50, 100, 500];
+const DEPOSIT_PRESETS = [100, 500, 1000, 5000];
 
 // Single rAF drives opacity for ALL active items at the same time
 function usePulse(period = 1800) {
@@ -85,49 +93,108 @@ export function BetPanel({
   betAmount,
   onBetAmountChange,
   onClearResolved,
+  session,
+  onStartSession,
+  onEndSession,
+  depositPending,
+  depositError,
+  walletConnected,
 }: Props) {
   const hasResolved = bets.some((b) => b.status !== "active");
   const pulseOpacity = usePulse(1800);
-  const hasActive = bets.some((b) => b.status === "active");
   const [selectedBet, setSelectedBet] = useState<Bet | null>(null);
+  const [depositAmount, setDepositAmount] = useState(1000);
+
+  const isIdle = session === "idle";
 
   return (
     <div className="bet-panel">
       <div className="bet-panel__balance">
         <div className="section-label">Balance</div>
         <div className="balance-amount">
-          <sup>$</sup>
           {balance.toFixed(2)}
+          <span className="balance-unit">INIT</span>
         </div>
+        {isIdle ? (
+          <>
+            <div className="deposit-presets">
+              {DEPOSIT_PRESETS.map((a) => (
+                <button
+                  key={a}
+                  className={`amount-btn ${depositAmount === a ? "amount-btn--active" : ""}`}
+                  onClick={() => setDepositAmount(a)}
+                >
+                  {a} INIT
+                </button>
+              ))}
+            </div>
+            <div className="amount-custom">
+              <input
+                className="amount-custom__input"
+                type="number"
+                min={1}
+                value={depositAmount}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value);
+                  if (!isNaN(v) && v > 0) setDepositAmount(v);
+                }}
+              />
+              <span className="amount-custom__suffix">INIT</span>
+            </div>
+            <button
+              className="session-btn session-btn--start"
+              onClick={() => onStartSession(depositAmount)}
+              disabled={depositAmount <= 0 || depositPending}
+            >
+              {depositPending
+                ? "Signing…"
+                : walletConnected
+                  ? "Deposit and Start"
+                  : "Connect Wallet to Start"}
+            </button>
+            {depositError && (
+              <div className="session-error">{depositError}</div>
+            )}
+          </>
+        ) : (
+          <button
+            className="session-btn session-btn--end"
+            onClick={onEndSession}
+          >
+            End
+          </button>
+        )}
       </div>
 
-      <div className="bet-panel__amount">
-        <div className="section-label">Bet Amount</div>
-        <div className="amount-presets">
-          {PRESET_AMOUNTS.map((a) => (
-            <button
-              key={a}
-              className={`amount-btn ${betAmount === a ? "amount-btn--active" : ""}`}
-              onClick={() => onBetAmountChange(a)}
-            >
-              ${a}
-            </button>
-          ))}
+      {!isIdle && (
+        <div className="bet-panel__amount">
+          <div className="section-label">Bet Amount</div>
+          <div className="amount-presets">
+            {PRESET_AMOUNTS.map((a) => (
+              <button
+                key={a}
+                className={`amount-btn ${betAmount === a ? "amount-btn--active" : ""}`}
+                onClick={() => onBetAmountChange(a)}
+              >
+                {a} INIT
+              </button>
+            ))}
+          </div>
+          <div className="amount-custom">
+            <input
+              className="amount-custom__input"
+              type="number"
+              min={1}
+              value={betAmount}
+              onChange={(e) => {
+                const v = parseInt(e.target.value);
+                if (!isNaN(v) && v > 0) onBetAmountChange(v);
+              }}
+            />
+            <span className="amount-custom__suffix">INIT</span>
+          </div>
         </div>
-        <div className="amount-custom">
-          <span className="amount-custom__prefix">$</span>
-          <input
-            className="amount-custom__input"
-            type="number"
-            min={1}
-            value={betAmount}
-            onChange={(e) => {
-              const v = parseInt(e.target.value);
-              if (!isNaN(v) && v > 0) onBetAmountChange(v);
-            }}
-          />
-        </div>
-      </div>
+      )}
 
       <div className="bet-panel__header">
         <span className="section-label">
@@ -194,15 +261,15 @@ export function BetPanel({
                   {formatTime(tr.start)} — {formatTime(tr.end)}
                 </div>
                 <div className="bet-amount">
-                  ${bet.amount}
+                  {bet.amount} INIT
                   {bet.status === "won" && (
                     <span className="bet-pnl bet-pnl--won">
-                      +${(bet.amount * bet.odds - bet.amount).toFixed(2)}
+                      +{(bet.amount * bet.odds - bet.amount).toFixed(2)} INIT
                     </span>
                   )}
                   {bet.status === "lost" && (
                     <span className="bet-pnl bet-pnl--lost">
-                      -${bet.amount.toFixed(2)}
+                      -{bet.amount.toFixed(2)} INIT
                     </span>
                   )}
                 </div>

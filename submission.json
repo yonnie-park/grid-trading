@@ -1,0 +1,12 @@
+{
+  "project_name": "Griddy",
+  "repo_url": "https://github.com/<org>/<repo>",
+  "commit_sha": "2670bdf5d3d6d60172363b0db8695b8f6e6ae921",
+  "rollup_chain_id": "evm-1",
+  "deployed_address": "0x...",
+  "vm": "evm",
+  "native_feature": "InterwovenKit bridging (openBridge)",
+  "core_logic_path": "src/hooks/useBettingEngine.ts",
+  "native_feature_frontend_path": "src/App.tsx",
+  "demo_video_url": "https://youtu.be/..."
+}
