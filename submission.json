@@ -1,6 +1,6 @@
 {
   "project_name": "Griddy",
-  "repo_url": "https://github.com/<org>/<repo>",
+  "repo_url": "https://github.com/qed-lgtm/griddy-trading",
   "commit_sha": "0dc8ad6b460e9e2d324ea4c453b17fc0675c1dab",
   "rollup_chain_id": "evm-1",
   "deployed_address": "0x...",
@@ -8,5 +8,5 @@
   "native_feature": "InterwovenKit bridging (openBridge)",
   "core_logic_path": "src/hooks/useBettingEngine.ts",
   "native_feature_frontend_path": "src/App.tsx",
-  "demo_video_url": "https://youtu.be/..."
+  "demo_video_url": "https://www.youtube.com/watch?v=NpZm_2CEvkY"
 }
