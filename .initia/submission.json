@@ -5,8 +5,8 @@
   "rollup_chain_id": "evm-1",
   "deployed_address": "0x...",
   "vm": "evm",
-  "native_feature": "InterwovenKit bridging (openBridge)",
+  "native_feature": "InterwovenKit bridging (openBridge) + Initia usernames",
   "core_logic_path": "src/hooks/useBettingEngine.ts",
-  "native_feature_frontend_path": "src/App.tsx",
+  "native_feature_frontend_path": "src/components/StatusBar/StatusBar.tsx",
   "demo_video_url": "https://www.youtube.com/watch?v=NpZm_2CEvkY"
 }
