@@ -4,3 +4,7 @@ dist
 .env.local
 .DS_Store
 .claude
+
+contracts/out/
+contracts/cache/
+contracts/.env

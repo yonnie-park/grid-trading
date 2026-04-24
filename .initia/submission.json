@@ -1,12 +1,12 @@
 {
   "project_name": "Griddy",
   "repo_url": "https://github.com/qed-lgtm/griddy-trading",
-  "commit_sha": "0dc8ad6b460e9e2d324ea4c453b17fc0675c1dab",
+  "commit_sha": "4cd87c14c804a6301958d447acd9f3ab3a17d05a",
   "rollup_chain_id": "evm-1",
-  "deployed_address": "0x...",
+  "deployed_address": "0x774ff78687710c8ee4aCa29701D919FB4AD185e5",
   "vm": "evm",
   "native_feature": "InterwovenKit bridging (openBridge) + Initia usernames",
-  "core_logic_path": "src/hooks/useBettingEngine.ts",
+  "core_logic_path": "contracts/src/GriddyVault.sol",
   "native_feature_frontend_path": "src/components/StatusBar/StatusBar.tsx",
   "demo_video_url": "https://www.youtube.com/watch?v=NpZm_2CEvkY"
 }

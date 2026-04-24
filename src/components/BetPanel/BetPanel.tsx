@@ -38,6 +38,7 @@ interface Props {
   onClearResolved: () => void;
   session: Session;
   onEndSession: () => void;
+  endPending: boolean;
 }
 
 const PRESET_AMOUNTS = [10, 50, 100, 500];
@@ -93,6 +94,7 @@ export function BetPanel({
   onClearResolved,
   session,
   onEndSession,
+  endPending,
 }: Props) {
   const hasResolved = bets.some((b) => b.status !== "active");
   const pulseOpacity = usePulse(1800);
@@ -112,8 +114,9 @@ export function BetPanel({
           <button
             className="session-btn session-btn--end"
             onClick={onEndSession}
+            disabled={endPending}
           >
-            End
+            {endPending ? "Settling…" : "End"}
           </button>
         )}
       </div>

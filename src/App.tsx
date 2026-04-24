@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { useInterwovenKit } from "@initia/interwovenkit-react";
+import { encodeFunctionData } from "viem";
 import { StatusBar } from "./components/StatusBar/StatusBar";
 import { BetPanel } from "./components/BetPanel/BetPanel";
 import { TradingCanvas } from "./components/TradingCanvas/TradingCanvas";
@@ -8,18 +9,35 @@ import { DepositGate } from "./components/DepositGate/DepositGate";
 import { usePriceStream } from "./hooks/usePriceStream";
 import { useBettingEngine } from "./hooks/useBettingEngine";
 import {
+  ERC20_APPROVE_ABI,
   GAME_CHAIN_ID,
-  INIT_DENOM,
-  TREASURY_ADDRESS,
+  INIT_ERC20_ADDRESS,
+  VAULT_ABI,
+  VAULT_ADDRESS,
   toInitBaseUnits,
 } from "./lib/chain";
 import "./App.css";
+
+function msgCall(sender: string, contractAddr: `0x${string}`, input: `0x${string}`) {
+  return {
+    typeUrl: "/minievm.evm.v1.MsgCall",
+    value: {
+      sender: sender.toLowerCase(),
+      contractAddr,
+      input,
+      value: "0",
+      accessList: [],
+      authList: [],
+    },
+  };
+}
 
 export function App() {
   const [betAmount, setBetAmount] = useState(100);
   const [followPrice, setFollowPrice] = useState(true);
   const [depositPending, setDepositPending] = useState(false);
   const [depositError, setDepositError] = useState<string | null>(null);
+  const [endPending, setEndPending] = useState(false);
   const { bufferRef, currentPrice, status } = usePriceStream("binance");
   const {
     bets,
@@ -54,25 +72,29 @@ export function App() {
   const handleDepositAndStart = useCallback(
     async (depositAmount: number) => {
       setDepositError(null);
-      if (!initiaAddress) {
+      if (!initiaAddress || !address) {
         openConnect();
         return;
       }
       if (depositAmount <= 0) return;
       setDepositPending(true);
       try {
-        const amount = toInitBaseUnits(depositAmount);
+        const amount = BigInt(toInitBaseUnits(depositAmount));
+        const approveInput = encodeFunctionData({
+          abi: ERC20_APPROVE_ABI,
+          functionName: "approve",
+          args: [VAULT_ADDRESS, amount],
+        });
+        const depositInput = encodeFunctionData({
+          abi: VAULT_ABI,
+          functionName: "deposit",
+          args: [amount],
+        });
         await requestTxBlock({
           chainId: GAME_CHAIN_ID,
           messages: [
-            {
-              typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-              value: {
-                fromAddress: initiaAddress.toLowerCase(),
-                toAddress: TREASURY_ADDRESS,
-                amount: [{ denom: INIT_DENOM, amount }],
-              },
-            },
+            msgCall(initiaAddress, INIT_ERC20_ADDRESS, approveInput),
+            msgCall(initiaAddress, VAULT_ADDRESS, depositInput),
           ],
         });
         startSession(depositAmount);
@@ -84,8 +106,35 @@ export function App() {
         setDepositPending(false);
       }
     },
-    [initiaAddress, openConnect, requestTxBlock, startSession],
+    [address, initiaAddress, openConnect, requestTxBlock, startSession],
   );
+
+  const handleEndAndSettle = useCallback(async () => {
+    if (!initiaAddress || !address) {
+      endSession();
+      return;
+    }
+    setEndPending(true);
+    try {
+      const finalAmount = BigInt(toInitBaseUnits(Math.max(balance, 0)));
+      const settleInput = encodeFunctionData({
+        abi: VAULT_ABI,
+        functionName: "settle",
+        args: [address as `0x${string}`, finalAmount],
+      });
+      await requestTxBlock({
+        chainId: GAME_CHAIN_ID,
+        messages: [msgCall(initiaAddress, VAULT_ADDRESS, settleInput)],
+      });
+    } catch (err) {
+      // Settle failures shouldn't block the UX — the user's game state should
+      // still reset locally. Log for debugging.
+      console.error("settle tx failed:", err);
+    } finally {
+      setEndPending(false);
+      endSession();
+    }
+  }, [address, balance, endSession, initiaAddress, requestTxBlock]);
 
   return (
     <div className="app">
@@ -127,7 +176,8 @@ export function App() {
             onBetAmountChange={setBetAmount}
             onClearResolved={clearResolved}
             session={session}
-            onEndSession={endSession}
+            onEndSession={handleEndAndSettle}
+            endPending={endPending}
           />
         </div>
       </div>

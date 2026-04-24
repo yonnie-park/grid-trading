@@ -9,12 +9,51 @@ export const INIT_DENOM = "evm/2eE7007DF876084d4C74685e90bB7f4cd7c86e22";
 export const INIT_DECIMALS = 18;
 export const INIT_SYMBOL = "INIT";
 
-// Placeholder treasury — swap for the game contract's bech32 address once deployed.
-// For the smoke test we self-send (user → user) so nothing is actually lost.
-export const TREASURY_ADDRESS = "init1ndw785vg6gmww8kmm2ap2lzd3zx4pj7dag0eul";
+// EVM (hex) addresses for MsgCall. contractAddr in MsgCall must be hex.
+export const INIT_ERC20_ADDRESS =
+  "0x2eE7007DF876084d4C74685e90bB7f4cd7c86e22" as const;
+
+// GriddyVault — deposit/settle escrow for the game.
+// Deployed 2026-04-24 via contracts/script/DeployGriddyVault.s.sol.
+export const VAULT_ADDRESS =
+  "0x774ff78687710c8ee4aCa29701D919FB4AD185e5" as const;
 
 export const L1_CHAIN_ID = "initiation-2";
 export const L1_BRIDGE_DENOM = "uinit";
+
+// Minimal ABIs — we only call approve, deposit, settle.
+export const ERC20_APPROVE_ABI = [
+  {
+    type: "function",
+    name: "approve",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "spender", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+] as const;
+
+export const VAULT_ABI = [
+  {
+    type: "function",
+    name: "deposit",
+    stateMutability: "nonpayable",
+    inputs: [{ name: "amount", type: "uint256" }],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "settle",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "user", type: "address" },
+      { name: "amount", type: "uint256" },
+    ],
+    outputs: [],
+  },
+] as const;
 
 export function toInitBaseUnits(display: number): string {
   // Use string math to avoid float rounding for 18-decimal amounts.
